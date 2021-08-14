@@ -1,9 +1,10 @@
 ﻿using SeoSampleApp.Entities;
+using System.Threading.Tasks;
 
 namespace SeoSampleApp.Services
 {
     public interface ISearchService
     {
-        SearchResult ProcessSearch(SearchRequest searchRequest);
+        Task<SearchResult> ProcessSearch(SearchRequest searchRequest);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
@@ -43,62 +44,62 @@ namespace UnitTests.SeoSampleApp
         }
 
         [Test]
-        public void ShouldSearch()
+        public async Task ShouldSearch()
         {
-            var result = _sut.ProcessSearch(_sampleRequest);
+            var result = await _sut.ProcessSearch(_sampleRequest);
             result.Hits.Should().Be(1);
         }
 
         [Test]
-        public void ShouldSearchWithoutCaseSensitivity()
+        public async Task ShouldSearchWithoutCaseSensitivity()
         {
             _sampleRequest.SEOTerm = "MeOw MiX";
-            var result = _sut.ProcessSearch(_sampleRequest);
+            var result = await _sut.ProcessSearch(_sampleRequest);
             result.Hits.Should().Be(1);
         }
 
         [Test]
-        public void ShouldHandleNullRequests()
+        public async Task ShouldHandleNullRequests()
         {
-            Assert.Throws<Exception>(() => { _sut.ProcessSearch(null); });
+            Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(null); });
         }
 
         [Test]
-        public void ShouldHandleNonGoogleRequestsWithoutURL()
+        public async Task ShouldHandleNonGoogleRequestsWithoutURL()
         {
             _sampleRequest.UseGoogle = false;
             _sampleRequest.SearchURL = "";
-            Assert.Throws<Exception>(() => { _sut.ProcessSearch(_sampleRequest); });
+            Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(_sampleRequest); });
         }
 
         [Test]
-        public void ShouldHandleRequestsWithNoSearchTerm()
+        public async Task ShouldHandleRequestsWithNoSearchTerm()
         {
             _sampleRequest.SearchTerm = "";
-            Assert.Throws<Exception>(() => { _sut.ProcessSearch(_sampleRequest); });
+            Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(_sampleRequest); });
         }
 
         [Test]
-        public void ShouldHandleRequestsWithNoSEOTerm()
+        public async Task ShouldHandleRequestsWithNoSEOTerm()
         {
             _sampleRequest.SEOTerm = "";
-            Assert.Throws<Exception>(() => { _sut.ProcessSearch(_sampleRequest); });
+            Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(_sampleRequest); });
         }
 
         [Test]
-        public void ShouldSaveSearchResults()
+        public async Task ShouldSaveSearchResults()
         {
-            var result = _sut.ProcessSearch(_sampleRequest);
+            var result = await _sut.ProcessSearch(_sampleRequest);
             result.Hits.Should().Be(1);
 
             _searchHistoryServiceMock.Received().Save(Arg.Any<SearchResult>());
         }
 
         [Test]
-        public void ShouldReturnResultIfSaveThrows()
+        public async Task ShouldReturnResultIfSaveThrows()
         {
             _searchHistoryServiceMock.When(x => x.Save(Arg.Any<SearchResult>())).Do(x => { throw new Exception(); });
-            var result = _sut.ProcessSearch(_sampleRequest);
+            var result = await _sut.ProcessSearch(_sampleRequest);
             result.Hits.Should().Be(1);
         }
     }

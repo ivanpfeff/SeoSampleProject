@@ -27,7 +27,8 @@ namespace SeoSampleApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.Configure<SearchConfiguration>(Configuration.GetSection("myConfiguration"));
+            services.Configure<SearchConfiguration>(Configuration.GetSection("SearchConfiguration"));
+            services.Configure<MongoConfiguration>(Configuration.GetSection("MongoConfiguration"));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

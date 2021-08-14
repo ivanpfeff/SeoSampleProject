@@ -1,7 +1,9 @@
-﻿namespace SeoSampleApp.Services
+﻿using System.Threading.Tasks;
+
+namespace SeoSampleApp.Services
 {
     public interface IHttpWrapperService
     {
-        string ExecuteGETRequest(string searchUrl);
+        Task<string> ExecuteGETRequest(string searchUrl);
     }
 }

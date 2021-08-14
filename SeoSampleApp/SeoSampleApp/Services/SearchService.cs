@@ -22,7 +22,7 @@ namespace SeoSampleApp.Services
             _searchHistoryService = searchHistoryService;
         }
 
-        public SearchResult ProcessSearch(SearchRequest searchRequest)
+        public async Task<SearchResult> ProcessSearch(SearchRequest searchRequest)
         {
             if(searchRequest == null)
             {
@@ -48,7 +48,7 @@ namespace SeoSampleApp.Services
                 ? Regex.Replace(_searchConfiguration.GoogleSearchFormat, "SEARCH_TERM", searchRequest.SearchTerm) 
                 : searchRequest.SearchURL;
 
-            var response = _httpWrapperService.ExecuteGETRequest(searchUrl);
+            var response = await _httpWrapperService.ExecuteGETRequest(searchUrl);
             
             var responseCaseInvariant = response.ToLowerInvariant();
             var seoTermInvariant = searchRequest.SEOTerm.ToLowerInvariant();
