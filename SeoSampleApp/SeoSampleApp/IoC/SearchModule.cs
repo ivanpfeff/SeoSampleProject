@@ -18,6 +18,7 @@ namespace SeoSampleApp.IoC
             base.Load(builder);
 
             //Register search related components
+            builder.RegisterType<HttpWrapperService>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SearchService>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SearchHistoryService>().AsImplementedInterfaces().InstancePerDependency();
 

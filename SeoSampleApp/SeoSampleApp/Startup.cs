@@ -27,13 +27,17 @@ namespace SeoSampleApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.Configure<SearchConfiguration>(Configuration.GetSection("SearchConfiguration"));
-            services.Configure<MongoConfiguration>(Configuration.GetSection("MongoConfiguration"));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule<SearchModule>();
+
+            var searchConfig = Configuration.GetSection("SearchConfiguration").Get<SearchConfiguration>();
+            var mongoConfig = Configuration.GetSection("MongoConfiguration").Get<MongoConfiguration>();
+            
+            builder.RegisterInstance(searchConfig).AsSelf();
+            builder.RegisterInstance(mongoConfig).AsSelf();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +63,8 @@ namespace SeoSampleApp
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
         }

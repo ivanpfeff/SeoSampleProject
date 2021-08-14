@@ -10,6 +10,10 @@ namespace SeoSampleApp
     [ApiController]
     public class SearchHistoryController : ControllerBase
     {
+        public SearchHistoryController()
+        {
+        }
+
         // GET: api/<ValuesController>
         [HttpGet]
         public IEnumerable<string> Get()

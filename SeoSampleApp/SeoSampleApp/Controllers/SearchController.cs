@@ -21,9 +21,10 @@ namespace SeoSampleApp
 
         // POST api/<SearchController>
         [HttpPost]
-        public void Post([FromBody] SearchRequest searchRequest)
+        public async Task<SearchResult> Post([FromBody] SearchRequest searchRequest)
         {
-            var searchResult = _searchService.ProcessSearch(searchRequest);
+            var searchResult = await _searchService.ProcessSearch(searchRequest);
+            return searchResult;
         }
     }
 }
