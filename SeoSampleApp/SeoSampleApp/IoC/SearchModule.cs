@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using SeoSampleApp.Services;
+using SeoSampleApp.Services.DataLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,8 @@ namespace SeoSampleApp.IoC
             base.Load(builder);
 
             //Register search related components
+            builder.RegisterType<SearchService>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SearchHistoryService>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }
