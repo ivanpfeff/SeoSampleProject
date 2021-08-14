@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SeoSampleApp.Entities;
+using SeoSampleApp.Services.DataLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,40 +12,17 @@ namespace SeoSampleApp
     [ApiController]
     public class SearchHistoryController : ControllerBase
     {
-        public SearchHistoryController()
+        private readonly ISearchHistoryService _searchHistoryService;
+
+        public SearchHistoryController(ISearchHistoryService searchHistoryService)
         {
+            _searchHistoryService = searchHistoryService;
         }
 
-        // GET: api/<ValuesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<SearchResult> Get()
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<SearchHistory>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<SearchHistory>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<SearchHistory>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SearchHistory>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return _searchHistoryService.LoadAll().OrderByDescending(x => x.Date);
         }
     }
 }

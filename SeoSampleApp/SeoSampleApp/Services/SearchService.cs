@@ -66,7 +66,7 @@ namespace SeoSampleApp.Services
                 SearchID = Guid.NewGuid(),
                 Date = DateTime.UtcNow,
                 SearchTerm = searchRequest.SearchTerm,
-                URL = searchUrl,
+                URL = searchRequest.URL,
                 Score = foundAt,
             };
 

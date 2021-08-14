@@ -14,35 +14,57 @@ $(document).ready(function () {
     var ViewModel = function () {
         var self = this;
 
-        this.useGoogle = ko.observable(true);
         this.searchURL = ko.observable("");
         this.searchTerm = ko.observable("");
-        this.seoTerm = ko.observable("");
         this.latestResult = ko.observable(null);
-
-        this.searchesLoading = ko.observable(true);
         this.previousSearches = ko.observableArray([]);
 
         this.latestSearchText = ko.computed(function () {
             if (!self.latestResult())
                 return "";
 
-            if (self.latestResult().searchTerm) {
-                return "You searched for '{0}' at URL {1} with SEO term '{2}' and found {3} hit(s)"
-                    .format(self.latestResult().searchTerm, self.latestResult().url, self.latestResult().seoTerm, self.latestResult().hits);
+            if (self.latestResult().score > 0) {
+                return "You searched google for '{0}' and your URL '{1}' was found at rank {2}."
+                    .format(self.latestResult().searchTerm, self.latestResult().url, self.latestResult().score);
+            } else {
+                return "You searched google for '{0}' but your URL '{1}' was not found within the top 100 results."
+                    .format(self.latestResult().searchTerm, self.latestResult().url);
             }
-            else {
-                return "You searched URL {0} with SEO term '{1}' and found {2} hit(s)"
-                    .format(self.latestResult().url, self.latestResult().seoTerm, self.latestResult().hits);
-            }
+            
         });
+
+        this.scoreFormat = function (score) {
+            if (score > 0) {
+                return "{0}".format(score);
+            } else {
+                return "Not found";
+            }
+        };
+
+        this.hasSearchResults = ko.computed(function () {
+            return self.previousSearches().length > 0;
+        });
+
+        this.refreshHistory = function () {
+            $.ajax({
+                type: "GET",
+                url: '/api/SearchHistory',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    debugger;
+                    self.previousSearches(data);
+                },
+                error: function () {
+                    alert("Error while attempting to retrieve previous search history");
+                }
+            });
+        };
 
         this.doSearch = function () {
             var searchRequest = {
-                useGoogle: this.useGoogle(),
                 searchTerm: this.searchTerm(),
-                searchURL: this.searchURL(),
-                seoTerm: this.seoTerm(),
+                url: this.searchURL(),
             };
 
             $.ajax({
@@ -52,14 +74,16 @@ $(document).ready(function () {
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
-                    debugger;
                     self.latestResult(data);
+                    self.refreshHistory();
                 },
                 error: function () {
-                    alert("Error while executing vendor search");
+                    alert("Error while executing google search");
                 }
             });
         }
+
+        self.refreshHistory();
     }
 
     var vm = new ViewModel();
