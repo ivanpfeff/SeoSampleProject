@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h2>SEO Hit Query</h2>
+<form>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" data-bind="checked: useGoogle">
+        <label class="form-check-label" for="exampleCheck1">Use Google</label>
+    </div>
+    <div class="form-group" data-bind="hidden: useGoogle">
+        <label for="exampleInputEmail1">Search URL</label>
+        <input type="text" class="form-control" aria-describedby="searchUrlHelp" placeholder="https://www.google.com/search?q=Cat+Food">
+        <small id="searchUrlHelp" class="form-text text-muted">A GET request will be made to this URL</small>
+    </div>
+    <div class="form-group" data-bind="visible: useGoogle">
+        <label for="exampleInputEmail1">Search Term</label>
+        <input type="text" class="form-control" aria-describedby="searchTermHelp" placeholder="e.g. Cat Food">
+        <small id="searchTermHelp" class="form-text text-muted">This is the search term which will be sent to google</small>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">SEO Term</label>
+        <input type="text" class="form-control" aria-describedby="seoTermHelp" placeholder="e.g. Meow Mix">
+        <small id="seoTermHelp" class="form-text text-muted">This is the term for which we will count all occurrences</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+
+@section Scripts {
+    <script src="~/js/search.js" asp-append-version="true"></script>
+}
