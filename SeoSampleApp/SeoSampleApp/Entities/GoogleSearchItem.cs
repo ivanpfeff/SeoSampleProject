@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SeoSampleApp.Entities
 {
-    public class SearchRequest
+    public class GoogleSearchItem
     {
-        public string SearchTerm { get; set; }
-        public string URL { get; set; }
+        public string Link { get; set; }
+        public string DisplayLink { get; set; }
     }
 }

@@ -12,21 +12,27 @@
     </div>
     <div class="form-group" data-bind="hidden: useGoogle">
         <label for="exampleInputEmail1">Search URL</label>
-        <input type="text" class="form-control" aria-describedby="searchUrlHelp" placeholder="https://www.google.com/search?q=Cat+Food">
+        <input type="text" data-bind="value: searchURL" class="form-control" aria-describedby="searchUrlHelp" placeholder="https://www.google.com/search?q=Cat+Food">
         <small id="searchUrlHelp" class="form-text text-muted">A GET request will be made to this URL</small>
     </div>
     <div class="form-group" data-bind="visible: useGoogle">
         <label for="exampleInputEmail1">Search Term</label>
-        <input type="text" class="form-control" aria-describedby="searchTermHelp" placeholder="e.g. Cat Food">
+        <input type="text" data-bind="value: searchTerm" class="form-control" aria-describedby="searchTermHelp" placeholder="e.g. Cat Food">
         <small id="searchTermHelp" class="form-text text-muted">This is the search term which will be sent to google</small>
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">SEO Term</label>
-        <input type="text" class="form-control" aria-describedby="seoTermHelp" placeholder="e.g. Meow Mix">
+        <input type="text" data-bind="value: seoTerm" class="form-control" aria-describedby="seoTermHelp" placeholder="e.g. Meow Mix">
         <small id="seoTermHelp" class="form-text text-muted">This is the term for which we will count all occurrences</small>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="submit" class="btn btn-primary" data-bind="click: doSearch">Search</button>
 </form>
+
+<div>
+    <strong>
+        <span data-bind="text: latestSearchText"></span>
+    </strong>
+</div>
 
 
 @section Scripts {

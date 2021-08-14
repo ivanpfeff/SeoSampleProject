@@ -1,4 +1,5 @@
-﻿using SeoSampleApp.Configuration;
+﻿using Newtonsoft.Json;
+using SeoSampleApp.Configuration;
 using SeoSampleApp.Entities;
 using SeoSampleApp.Services.DataLayer;
 using System;
@@ -29,44 +30,44 @@ namespace SeoSampleApp.Services
                 throw new Exception("Search request is null");
             }
 
-            if (string.IsNullOrEmpty(searchRequest.SEOTerm))
-            {
-                throw new Exception("SEO term must be provided");
-            }
-
-            if (searchRequest.UseGoogle && string.IsNullOrEmpty(searchRequest.SearchTerm))
+            if (string.IsNullOrEmpty(searchRequest.SearchTerm))
             {
                 throw new Exception("Search term must be provided");
             }
 
-            if (!searchRequest.UseGoogle && string.IsNullOrEmpty(searchRequest.SearchURL))
+
+            var searchUrl = Regex.Replace(_searchConfiguration.GoogleSearchFormat, "SEARCH_TERM", searchRequest.SearchTerm);
+            var start = 0;
+            var startSuffix = "&start=";
+            var foundAt = -1;
+
+            while(foundAt == -1 && start < 100)
             {
-                throw new Exception("A search URL must be provided when not using Google");
-            }
+                var query = $"{searchUrl}{startSuffix}{start}";
+                var responseJson = await _httpWrapperService.ExecuteGETRequest(query);
+                var searchResult = JsonConvert.DeserializeObject<GoogleSearchResult>(responseJson);
+                for(var i = 0; i < searchResult.Items.Length; i++)
+                {
+                    var item = searchResult.Items[i];
+                    var link = item.Link.ToLowerInvariant();
+                    var displayLink = item.DisplayLink.ToLowerInvariant();
 
-            var searchUrl = searchRequest.UseGoogle 
-                ? Regex.Replace(_searchConfiguration.GoogleSearchFormat, "SEARCH_TERM", searchRequest.SearchTerm) 
-                : searchRequest.SearchURL;
+                    if(link.Contains(searchRequest.URL) || displayLink.Contains(searchRequest.URL))
+                    {
+                        foundAt = start + i + 1;
+                    }
+                }
 
-            var response = await _httpWrapperService.ExecuteGETRequest(searchUrl);
-            
-            var responseCaseInvariant = response.ToLowerInvariant();
-            var seoTermInvariant = searchRequest.SEOTerm.ToLowerInvariant();
-
-            var count = 0;
-            var idx = responseCaseInvariant.IndexOf(seoTermInvariant, 0);
-            while(idx != -1)
-            {
-                count++;
-                idx = responseCaseInvariant.IndexOf(seoTermInvariant, idx + 1);
+                start += 10;
             }
 
             var result = new SearchResult()
             {
-                Hits = count,
-                Body = response,
-                SEOTerm = seoTermInvariant,
-                URL = searchUrl
+                SearchID = Guid.NewGuid(),
+                Date = DateTime.UtcNow,
+                SearchTerm = searchRequest.SearchTerm,
+                URL = searchUrl,
+                Score = foundAt,
             };
 
             try
