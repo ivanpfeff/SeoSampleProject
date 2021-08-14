@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using SeoSampleApp.Configuration;
@@ -16,6 +17,7 @@ namespace UnitTests.SeoSampleApp
         private ISearchService _sut;
 
         private SearchConfiguration _searchConfiguration;
+        private ILogger _loggerMock;
         private IHttpWrapperService _httpWrapperMock;
         private ISearchHistoryService _searchHistoryServiceMock;
 
@@ -29,10 +31,11 @@ namespace UnitTests.SeoSampleApp
                 GoogleSearchFormat = "https://google.com/q=SEARCH_TERM"
             };
 
+            _loggerMock = Substitute.For<ILogger>();
             _httpWrapperMock = Substitute.For<IHttpWrapperService>();
             _searchHistoryServiceMock = Substitute.For<ISearchHistoryService>();
 
-            _sut = new SearchService(_searchConfiguration, _httpWrapperMock, _searchHistoryServiceMock);
+            _sut = new SearchService(_loggerMock, _searchConfiguration, _httpWrapperMock, _searchHistoryServiceMock);
             _sampleRequest = new SearchRequest()
             {
                 SearchTerm = "Cat Foods",

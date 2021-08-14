@@ -27,6 +27,7 @@ namespace SeoSampleApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddLogging();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SeoSampleApp.Configuration;
 using SeoSampleApp.Entities;
 using SeoSampleApp.Services.DataLayer;
@@ -12,12 +13,14 @@ namespace SeoSampleApp.Services
 {
     public class SearchService : ISearchService
     {
+        ILogger _logger;
         private readonly SearchConfiguration _searchConfiguration;
         private readonly IHttpWrapperService _httpWrapperService;
         private readonly ISearchHistoryService _searchHistoryService;
 
-        public SearchService(SearchConfiguration searchConfiguration, IHttpWrapperService httpWrapperService, ISearchHistoryService searchHistoryService)
+        public SearchService(ILogger<SearchService> logger, SearchConfiguration searchConfiguration, IHttpWrapperService httpWrapperService, ISearchHistoryService searchHistoryService)
         {
+            _logger = logger;
             _searchConfiguration = searchConfiguration;
             _httpWrapperService = httpWrapperService;
             _searchHistoryService = searchHistoryService;
@@ -76,7 +79,7 @@ namespace SeoSampleApp.Services
             }
             catch(Exception ex)
             {
-                //TODO: logging
+                _logger.LogWarning(ex, "Unable to access mongodb during a search");
             }
 
             return result;
