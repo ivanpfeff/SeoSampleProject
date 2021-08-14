@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SeoSampleApp.Configuration;
 using SeoSampleApp.IoC;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace SeoSampleApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.Configure<SearchConfiguration>(Configuration.GetSection("myConfiguration"));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
