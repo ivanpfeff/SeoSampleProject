@@ -38,6 +38,11 @@ namespace SeoSampleApp.Services
                 throw new Exception("Search term must be provided");
             }
 
+            if (string.IsNullOrEmpty(searchRequest.URL))
+            {
+                throw new Exception("A rank URL must be provided");
+            }
+
 
             var searchUrl = Regex.Replace(_searchConfiguration.GoogleSearchFormat, "SEARCH_TERM", searchRequest.SearchTerm);
             var start = 0;

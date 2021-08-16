@@ -17,7 +17,7 @@ namespace UnitTests.SeoSampleApp
         private ISearchService _sut;
 
         private SearchConfiguration _searchConfiguration;
-        private ILogger _loggerMock;
+        private ILogger<SearchService> _loggerMock;
         private IHttpWrapperService _httpWrapperMock;
         private ISearchHistoryService _searchHistoryServiceMock;
 
@@ -31,7 +31,7 @@ namespace UnitTests.SeoSampleApp
                 GoogleSearchFormat = "https://google.com/q=SEARCH_TERM"
             };
 
-            _loggerMock = Substitute.For<ILogger>();
+            _loggerMock = Substitute.For<ILogger<SearchService>>();
             _httpWrapperMock = Substitute.For<IHttpWrapperService>();
             _searchHistoryServiceMock = Substitute.For<ISearchHistoryService>();
 
@@ -74,6 +74,12 @@ namespace UnitTests.SeoSampleApp
             Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(_sampleRequest); });
         }
 
+        [Test]
+        public async Task ShouldHandleReuqestWithNoURL()
+        {
+            _sampleRequest.URL = "";
+            Assert.ThrowsAsync<Exception>(async () => { await _sut.ProcessSearch(_sampleRequest); });
+        }
 
         [Test]
         public async Task ShouldSaveSearchResults()

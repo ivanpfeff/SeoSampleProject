@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 using SeoSampleApp.Configuration;
 using SeoSampleApp.IoC;
@@ -20,6 +22,12 @@ namespace IntegrationTests.SeoSampleApp
         {
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule<SearchModule>();
+            containerBuilder.RegisterGeneric((ctx, t) =>
+            {
+                var loggerType = typeof(ILogger<>);
+                var genericType = loggerType.MakeGenericType(t);
+                return Substitute.For(new[] { genericType }, null);
+            }).As(typeof(ILogger<>));
 
             //TODO: These should be pulled out into a config file
             var testSearchConfig = new SearchConfiguration()
